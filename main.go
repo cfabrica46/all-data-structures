@@ -86,12 +86,42 @@ func main() {
 	fmt.Println("~~~Queue~~~")
 
 	JQ := queue.NewJobQueue()
-	for i := 0; i < 6; i++ {
-		err := JQ.JoinIntoQueue(queue.NewJob(time.Second))
-		if err != nil {
-			fmt.Println("The queue is full")
-		}
+
+	err := JQ.JoinIntoQueue(queue.NewJob(time.Second, simplePrint("hola")))
+	if err != nil {
+		fmt.Println("The queue is full")
 	}
+	err = JQ.JoinIntoQueue(queue.NewJob(time.Second, fillForm))
+	if err != nil {
+		fmt.Println("The queue is full")
+	}
+	err = JQ.JoinIntoQueue(queue.NewJob(time.Second, timeFunc))
+	if err != nil {
+		fmt.Println("The queue is full")
+	}
+
 	fmt.Println(JQ)
-	fmt.Scanln()
+	time.Sleep(time.Hour)
+}
+
+func simplePrint(message string) func() {
+	return func() {
+		fmt.Println(message)
+	}
+}
+
+func fillForm() {
+	var name, country string
+	fmt.Print("Name: ")
+	fmt.Scan(&name)
+	fmt.Print("County: ")
+	fmt.Scan(&country)
+	fmt.Printf("Name: %s | Country: %s\n", name, country)
+
+}
+
+func timeFunc() {
+	fmt.Println("Wait 3 Seconds")
+	time.Sleep(time.Second * 3)
+	fmt.Println("Finish")
 }

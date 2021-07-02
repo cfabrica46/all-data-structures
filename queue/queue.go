@@ -7,10 +7,11 @@ import (
 )
 
 type Job struct {
-	next      *Job
-	ID        int
-	Delay     time.Duration
-	completed bool
+	next        *Job
+	ID          int
+	Delay       time.Duration
+	completed   bool
+	JobFunction func()
 }
 
 type JobQueue struct {
@@ -30,8 +31,9 @@ func NewJobQueue() *JobQueue {
 			time.Sleep(time.Second)
 			if !JQ.IsEmpty() {
 				time.Sleep(JQ.head.Delay)
+				JQ.head.JobFunction()
 				j := outToQueue()
-				fmt.Printf("Has been Completed Job: %v\n", j.ID)
+				fmt.Printf("Has been Completed Job ID:%v\n", j.ID)
 			} else {
 				fmt.Println("The queue is empty")
 			}
@@ -40,9 +42,9 @@ func NewJobQueue() *JobQueue {
 	return JQ
 }
 
-func NewJob(delay time.Duration) *Job {
+func NewJob(delay time.Duration, jFunc func()) *Job {
 	idAux++
-	return &Job{ID: idAux, Delay: time.Second}
+	return &Job{ID: idAux, Delay: time.Second, JobFunction: jFunc}
 }
 
 func (q JobQueue) String() string {
