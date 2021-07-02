@@ -10,7 +10,6 @@ type Job struct {
 	next        *Job
 	ID          int
 	Delay       time.Duration
-	completed   bool
 	JobFunction func()
 }
 
@@ -69,7 +68,7 @@ func (q JobQueue) IsEmpty() (empty bool) {
 
 func (q *JobQueue) JoinIntoQueue(j *Job) (err error) {
 	if q.length == q.maxJobs {
-		err = errors.New("The queue is full")
+		err = errors.New("the queue is full")
 		return
 	}
 

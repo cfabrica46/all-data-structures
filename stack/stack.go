@@ -65,32 +65,3 @@ func (s *Stack) Pop() *Node {
 	s.head = s.head.prev
 	return NodeDeleted
 }
-
-func main() {
-	var n int
-	w := &sync.WaitGroup{}
-	stack := NewStack()
-
-	for i := 0; i < 10; i++ {
-		w.Add(1)
-		go func() {
-			defer w.Done()
-			stack.Push(n)
-			n++
-		}()
-
-	}
-	w.Wait()
-	fmt.Println(stack)
-	fmt.Println()
-
-	fmt.Println("Pop:")
-	for i := 0; i < stack.Len(); i++ {
-		if stack.Pop() == nil {
-			fmt.Println("The Stack Is Empty")
-		} else {
-			fmt.Println(stack)
-		}
-	}
-
-}

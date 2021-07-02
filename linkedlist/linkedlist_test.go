@@ -1,20 +1,15 @@
-package main
+package linkedlist
 
 import (
 	"fmt"
 	"sync"
-
-	"github.com/cfabrica46/all-data-structures/linkedlist"
+	"testing"
 )
 
-func main() {
-
+func TestSimpleLinkedList(t *testing.T) {
 	w := &sync.WaitGroup{}
-
-	fmt.Println("~~~~~All Data Structures~~~~~")
-	fmt.Println()
 	fmt.Println("~~~Simple Linked List~~~ ")
-	simpleList := linkedlist.NewLinkedList()
+	simpleList := NewLinkedList()
 	for i := 0; i < 10; i++ {
 		w.Add(1)
 		go func(i int) {
@@ -32,11 +27,13 @@ func main() {
 	fmt.Println(simpleList)
 	simpleList.InsertAfterTo(3, 32)
 	fmt.Println(simpleList)
+}
 
-	fmt.Println()
+func TestDoubleLinkedList(t *testing.T) {
+	w := &sync.WaitGroup{}
 	fmt.Println("~~~Double Linked List~~~")
 
-	doubleList := linkedlist.NewDoubleLinkedList()
+	doubleList := NewDoubleLinkedList()
 
 	for i := 0; i < 10; i++ {
 		w.Add(1)
@@ -54,5 +51,4 @@ func main() {
 	fmt.Println(doubleList)
 	doubleList.InsertAfterTo(5, 789)
 	fmt.Println(doubleList)
-
 }
