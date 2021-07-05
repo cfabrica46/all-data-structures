@@ -88,3 +88,81 @@ func (g *Graph) AddEdge(k1, k2 int) error {
 	g.Vertices[v2.Key] = v2
 	return nil
 }
+
+func (g Graph) DFS(startVertexKey int, visitedOrder map[int]bool) {
+
+	startVertex := g.Vertices[startVertexKey]
+
+	if startVertex == nil {
+		return
+	}
+
+	visitedOrder[startVertex.Key] = true
+
+	for _, v := range startVertex.Vertices {
+		if !visitedOrder[v.Key] {
+			g.DFS(v.Key, visitedOrder)
+		}
+	}
+}
+
+func (g *Graph) BFS(startVertex *Vertex, s *[]int) {
+	vertexQueue := &queue{}
+	visitedVertices := map[int]bool{}
+
+	currentVertex := startVertex
+	for {
+		visitedVertices[currentVertex.Key] = true
+		*s = append(*s, currentVertex.Key)
+
+		for _, v := range currentVertex.Vertices {
+			if !visitedVertices[v.Key] {
+				vertexQueue.enqueue(v)
+			}
+		}
+
+		currentVertex = vertexQueue.dequeue()
+
+		if currentVertex == nil {
+			break
+		}
+	}
+}
+
+type node struct {
+	value *Vertex
+	next  *node
+}
+
+type queue struct {
+	head, tail *node
+}
+
+func (q *queue) enqueue(v *Vertex) {
+	n := &node{value: v}
+
+	if q.head == nil {
+		q.head = n
+		q.tail = n
+		return
+	}
+
+	q.tail.next = n
+	q.tail = n
+}
+
+func (q *queue) dequeue() *Vertex {
+	n := q.head
+
+	if n == nil {
+		return nil
+	}
+
+	q.head = q.head.next
+
+	if q.head == nil {
+		q.tail = nil
+	}
+
+	return n.value
+}
