@@ -22,12 +22,12 @@ func NewVertex(key int) *Vertex {
 	}
 }
 
-//func NewDirectedGraph() *Graph {
-//	return &Graph{
-//		Vertices: map[int]*Vertex{},
-//		directed: true,
-//	}
-//}
+func NewDirectedGraph() *Graph {
+	return &Graph{
+		Vertices: map[int]*Vertex{},
+		directed: true,
+	}
+}
 
 func NewUndirectedGraph() *Graph {
 	return &Graph{
@@ -66,6 +66,45 @@ func (g *Graph) AddVertex(key int) {
 	g.Vertices[key] = v
 }
 
+func (g *Graph) DeleteVertex(key int) error {
+	v := g.Vertices[key]
+	if v == nil {
+		return errors.New("the vertex does not exist")
+	}
+
+	if g.directed {
+		for i := range g.Vertices {
+			delete(g.Vertices[i].Vertices, v.Key)
+		}
+	} else {
+		for i := range v.Vertices {
+			delete(v.Vertices[i].Vertices, v.Key)
+		}
+	}
+
+	delete(g.Vertices, v.Key)
+	return nil
+}
+
+func (g *Graph) DeleteEdge(k1, k2 int) error {
+	v1 := g.Vertices[k1]
+	v2 := g.Vertices[k2]
+
+	if v1 == nil || v2 == nil {
+		return errors.New("one or more vertices do not exist")
+	}
+
+	if v1.Vertices[v2.Key] == nil {
+		return nil
+	}
+
+	delete(v1.Vertices, v2.Key)
+	if !g.directed {
+		delete(v2.Vertices, v1.Key)
+	}
+	return nil
+}
+
 func (g *Graph) AddEdge(k1, k2 int) error {
 	v1 := g.Vertices[k1]
 	v2 := g.Vertices[k2]
@@ -76,7 +115,6 @@ func (g *Graph) AddEdge(k1, k2 int) error {
 
 	if v1.Vertices[v2.Key] != nil {
 		return nil
-
 	}
 
 	v1.Vertices[v2.Key] = v2
@@ -89,7 +127,7 @@ func (g *Graph) AddEdge(k1, k2 int) error {
 	return nil
 }
 
-func (g Graph) DFS(startVertexKey int, visitedOrder map[int]bool) {
+func (g Graph) DFS(startVertexKey int, visitedOrder map[int]bool, s *[]int) {
 
 	startVertex := g.Vertices[startVertexKey]
 
@@ -98,10 +136,11 @@ func (g Graph) DFS(startVertexKey int, visitedOrder map[int]bool) {
 	}
 
 	visitedOrder[startVertex.Key] = true
+	*s = append(*s, startVertex.Key)
 
 	for _, v := range startVertex.Vertices {
 		if !visitedOrder[v.Key] {
-			g.DFS(v.Key, visitedOrder)
+			g.DFS(v.Key, visitedOrder, s)
 		}
 	}
 }
