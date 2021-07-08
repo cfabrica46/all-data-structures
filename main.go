@@ -7,8 +7,17 @@ import (
 	"github.com/cfabrica46/all-data-structures/linkedlist"
 )
 
+type user struct {
+	name     string
+	password string
+	id       int
+}
+
 func main() {
 
+	u := user{}
+	fmt.Printf("u: %v\n", u)
+	u2 := u:
 	w := &sync.WaitGroup{}
 
 	fmt.Println("~~~~~All Data Structures~~~~~")
